@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { type GitHubUser } from '../types/github';
 import { useDispatch, useSelector } from 'react-redux';
-import { init_followers } from '../actions/authActions';
 import type { AppDispatch, RootState } from '../store';
 
 interface GitHubSearchResponse {
@@ -14,7 +13,7 @@ const UserDetailsComponent = ( {user} : GitHubSearchResponse) => {
   const followers = useSelector((state: RootState) => state.followers.followers)
 
   useEffect(()=>{
-    dispatch(init_followers(user.followers));
+    dispatch({type: 'INIT_FOLLOWERS', payload: user.followers});
   },[user, dispatch])
 
   return (

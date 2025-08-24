@@ -1,51 +1,74 @@
 import { useEffect, useState } from "react"
 import { getRandomSuggestions } from "../services/ListUsersService"
 import { listFollowers } from "../services/ListFollowers"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, type RootState } from "../store"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "../store"
 import { listFollowing } from "../services/ListFollowing"
 import { follow } from "../services/FollowService"
-import { inc_following } from "../actions/authActions"
+import { unfollow } from "../services/UnfollowService"
+import { useNavigate } from "react-router-dom"
+import Loader from "../components/Loader"
+import type { GitHubUser } from "../types/github"
+import Cookies from "js-cookie"
+import type { ButtonType } from "../types/types"
 
 const SuggestionsPage = () => {
-    const [users, setUsers] = useState([])
-    const [followers, setFollowers] = useState([])
-    const [following, setFollowing] = useState([])
-    const token = useSelector((state: RootState) => state.auth.token)
+    const [users, setUsers] = useState<GitHubUser[]>([])
+    const [followers, setFollowers] = useState<GitHubUser[]>([])
+    const [following, setFollowing] = useState<GitHubUser[]>([])
+    const [loading, setLoading] = useState(true)
+    const [followingLoading, setFollowingLoading] = useState(true)
+    const [followerLoading, setFollowerLoading] = useState(true)
+    const [followProcessing, setFollowProcessing] = useState(false)
+    const token = Cookies.get('token')
+    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const getSuggestions = async () => {
-        // if(!token) return
+        setLoading(true)
         const response = await getRandomSuggestions()
         setUsers(response)
-        console.log('suggestions: ', response)
+        setLoading(false)
     }
     const getFollowers = async () => {
-        if(!token) return
+        setFollowerLoading(true)
         const response = await listFollowers(token as string)
         setFollowers(response)
-        console.log('followers: ', response)
+        setFollowerLoading(false)
     }
     const getFollowing = async () => {
-        if(!token) return
+        setFollowingLoading(true)
         const response = await listFollowing(token as string)
         setFollowing(response)
-        console.log('following: ', response)
+        setFollowingLoading(false)
     }
-    const handleFollow = async (state: string, user, token: string) => {
-        if(state==='Following') {
-            return
+    const handleFollow = async (state: string, user: GitHubUser, token: string) => {
+        if(followProcessing) return
+        setFollowProcessing(true)
+        if(state==='Unfollow') {
+            try {
+                await unfollow(user.login as string, token)
+                const updatedFollowing = following.filter(item => item.login !== user.login)
+                setFollowing(updatedFollowing)
+                dispatch({type: 'DEC_FOLLOWING'})
+            } catch (error) {
+                if(error instanceof Error){
+                    console.error(error)
+                }
+            }
         }
         else {
             try {
-                await follow(user.login, token)
+                await follow(user.login as string, token)
                 setFollowing([...following,user])
-                dispatch(inc_following())
+                dispatch({type: 'INC_FOLLOWING'})
             } catch (error) {
                 console.error('an error occured while processing your request: ', error)
             }
         }
+        setFollowProcessing(false)
     }
     useEffect(()=>{
+        if(!token) navigate('/login')
         getSuggestions()
         getFollowers()
         getFollowing()
@@ -53,29 +76,29 @@ const SuggestionsPage = () => {
   return (
     <div>
         <h2>Suggestions</h2>
-        {users.map((user, index)=>{
+        {loading ? <Loader/> : users.map((user, index)=>{
             return (
                 <div key={index} style={{border: '1px solid gray', margin: '10px', display: 'flex', gap: '40px', justifyContent: 'center', alignItems: 'center'}}>
                     <img src={user.avatar_url} height={40} alt="avatar" />
                     <a href={user.html_url}>{user.login}</a>
-                    <button onClick={(e)=>{handleFollow(e.target.textContent, user, token);}}>{following.some(item => item.login===user.login) ? 'Following' : 'Follow'}</button>
+                    <button style={{display: (followingLoading ? 'none' : "inline")}} onClick={(e)=>{handleFollow((e.target as ButtonType).textContent, user, token as string);}}>{following.some(item => item.login===user.login) ? 'Unfollow' : 'Follow'}</button>
                 </div>
             )
         })}
         <br />
-        <button onClick={getSuggestions}>Refresh</button>
+        <button onClick={getSuggestions} disabled={loading}>Refresh</button>
         <br />
         <br />
         <h2>My Followers</h2>
-        {followers.map((follower, index) => {
+        {followerLoading ? <Loader/> : (!followers ? <p>nobody follows you</p> : followers.map((follower, index) => {
             return (
                 <div key={index} style={{border: '1px solid gray', margin: '10px', display: 'flex', gap: '40px', justifyContent: 'center', alignItems: 'center'}}>
-                    <img src={follower.avatar_url} height={40} alt="avatar" />
-                    <a href={follower.html_url}>{follower.login}</a>
-                    <button onClick={(e)=>{handleFollow(e.target.textContent, follower, token);}}>{following.some(item => item.login===follower.login) ? 'Following' : 'Follow'}</button>
+                    <img src={(follower as GitHubUser).avatar_url} height={40} alt="avatar" />
+                    <a href={(follower as GitHubUser).html_url}>{follower.login}</a>
+                    <button style={{display: (followingLoading ? 'none' : "inline")}} onClick={(e)=>{handleFollow((e.target as ButtonType).textContent, follower, token as string);}}>{following.some((item: GitHubUser) => item.login===follower.login) ? 'Unfollow' : 'Follow'}</button>
                 </div>
             )
-        })}
+        }))}
     </div>
   )
 }

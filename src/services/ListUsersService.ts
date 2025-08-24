@@ -6,7 +6,7 @@ export const getRandomSuggestions = async () => {
         `https://api.github.com/users?per_page=5&since=${num}`,
         {
             headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
+                Authorization: `Bearer ${process.env.VITE_GITHUB_TOKEN}`
             }
         }
     )

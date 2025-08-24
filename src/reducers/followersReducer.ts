@@ -27,7 +27,7 @@ const followersReducer = (state: FollowerState = initialState, action: FollowerA
         case INIT_FOLLOWERS:
             return {
                 ...state,
-                followers: action.payload,
+                followers: action.payload as number,
             }
     
         default:

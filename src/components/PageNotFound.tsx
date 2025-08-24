@@ -1,9 +1,11 @@
+import { Link } from "react-router-dom"
 
 const PageNotFound = () => {
   return (
-    <div>
-        <h2>Page Not Found</h2>
-        <strong>Error 404</strong>
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h1>404 - Page Not Found</h1>
+      <p>The page you are looking for does not exist.</p>
+      <Link to="/">Go to Homepage</Link>
     </div>
   )
 }
