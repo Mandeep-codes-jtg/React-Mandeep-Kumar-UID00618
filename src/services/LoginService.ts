@@ -10,6 +10,5 @@ export const loginUsingPAT = async (username: string, password: string): Promise
             }
         }
     )
-    console.log('username is: ', username)
     return response.data
 };

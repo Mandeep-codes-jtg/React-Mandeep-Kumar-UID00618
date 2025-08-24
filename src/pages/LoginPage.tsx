@@ -5,13 +5,13 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 const LoginPage = () => {
-  const username = useSelector((state: RootState) => state.auth.user)
+  const isAuthenticated = useSelector((state: RootState) => Boolean(state.auth.login))
   const navigate = useNavigate()
   useEffect(()=>{
-    if(username) {
+    if(isAuthenticated) {
       navigate('/profile')
     }
-  },[username, navigate])
+  },[isAuthenticated, navigate])
   return (
     <div>
       <LoginComponent />

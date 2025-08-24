@@ -11,8 +11,6 @@ import { type AuthState } from '../types/types';
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  user: null,
-  token: null,
   html_url: '',
   avatar_url: '',
   login: null,
@@ -35,8 +33,6 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload.login,
-        token: action.payload.token,
         avatar_url: action.payload.avatar_url,
         html_url: action.payload.html_url,
         login: action.payload.login,
@@ -54,8 +50,6 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
       return {
         ...state,
         isAuthenticated: false,
-        user: null,
-        token: null,
         avatar_url: '',
         html_url: '',
         login: null,
@@ -73,8 +67,6 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
       return {
         ...state,
         isAuthenticated: false,
-        user: null,
-        token: null,
         avatar_url: '',
         html_url: '',
         login: null,
@@ -96,7 +88,7 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
     case DEC_FOLLOWING:
       return {
         ...state,
-        following: state.following - 1,
+        following: Math.max(0, state.following - 1),
       }
     default:
       return state;

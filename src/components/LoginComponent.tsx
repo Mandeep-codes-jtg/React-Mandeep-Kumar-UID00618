@@ -46,9 +46,11 @@ const LoginComponent = () => {
         </div>
 
         <div>
-          <label>Password:</label><br />
+          <label htmlFor='pat'>Personal Access Token (PAT)</label><br />
           <input
+            id='pat'
             type="password"
+            autoComplete='off'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
