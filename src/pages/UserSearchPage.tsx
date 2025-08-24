@@ -30,7 +30,7 @@ const UserSearchPage = () => {
     try {
       setSuggestions([])
       setLoading(true)
-      const data = await fetchGitHubUser(query)
+      const data = await fetchGitHubUser(query, token)
       setUser(data);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -103,19 +103,19 @@ const UserSearchPage = () => {
       try {
         if(!user || !user.login || !token) 
           return 
-        await isFollowing(user.login, token as string)
-        setFollowing(true)
-      } catch (error) {
-        if(axios.isAxiosError(error) && error.status==404){
+        const statusCode = await isFollowing(user.login, token)
+        if(statusCode === 404) {
           setFollowing(false)
         }
-        else 
+        else if (statusCode === 204) {
+          setFollowing(true)
+        }
+      } catch (error) {
           console.error(error)
-        
       }
     }
     checkIfFollowing()
-  },[user])
+  },[user?.login, authUser?.login])
 
   return (
     <div style={{ padding: '2rem' }}>

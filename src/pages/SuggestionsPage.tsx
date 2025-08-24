@@ -25,7 +25,7 @@ const SuggestionsPage = () => {
     const dispatch = useDispatch<AppDispatch>()
     const getSuggestions = async () => {
         setLoading(true)
-        const response = await getRandomSuggestions()
+        const response = await getRandomSuggestions(token)
         setUsers(response)
         setLoading(false)
     }
