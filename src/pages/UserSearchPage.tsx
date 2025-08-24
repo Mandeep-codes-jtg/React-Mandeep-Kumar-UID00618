@@ -63,19 +63,19 @@ const UserSearchPage = () => {
       try {
         if(!user || !user.login || !authUser || !authUser.token) 
           return 
-        await isFollowing(user.login, authUser.token)
-        setFollowing(true)
-      } catch (error) {
-        if(axios.isAxiosError(error) && error.status==404){
+        const statusCode = await isFollowing(user.login, authUser.token)
+        if(statusCode === 404) {
           setFollowing(false)
         }
-        else 
+        else if (statusCode === 204) {
+          setFollowing(true)
+        }
+      } catch (error) {
           console.error(error)
-        
       }
     }
     checkIfFollowing()
-  },[user])
+  },[user?.login, authUser?.login])
 
   return (
     <div style={{ padding: '2rem' }}>
