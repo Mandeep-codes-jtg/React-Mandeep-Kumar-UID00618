@@ -10,6 +10,7 @@ import { isFollowing } from '../services/IsFollowingService';
 import { follow } from '../services/FollowService';
 import { unfollow } from '../services/UnfollowService';
 import { dec_followers, dec_following, inc_followers, inc_following } from '../actions/authActions';
+import Cookies from 'js-cookie'
 
 
 const UserSearchPage = () => {
@@ -18,10 +19,11 @@ const UserSearchPage = () => {
   const authUser = useSelector((state: RootState) => state.auth)
   const [following, setFollowing] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
+  const token = Cookies.get('token')
 
   const handleSearch = async (query: string) => {
     try {
-      const data = await fetchGitHubUser(query)
+      const data = await fetchGitHubUser(query, token)
       setUser(data);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
