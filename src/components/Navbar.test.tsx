@@ -10,6 +10,12 @@ const storeUnauthenticated = configureStore({
   reducer: { auth: authReducer },
 });
 
+beforeEach(() => {
+  Cookies.remove('token')
+})
+afterEach(() => {
+  Cookies.remove('token')
+})
 
 describe('Navbar component',()=>{
     test('should have User-Search and Login when not authenticated',()=>{
@@ -22,10 +28,10 @@ describe('Navbar component',()=>{
         )
         const userSearch = screen.getByText(/User Search/i)
         const login = screen.getByText(/Login/i)
-        expect(userSearch).toBeDefined()
-        expect(login).toBeDefined()
+        expect(userSearch).toBeInTheDocument()
+        expect(login).toBeInTheDocument()
     })
-    test('should have suggestions link when authenticated.',()=>{
+    test('should have suggestions link when authenticated and hide login',()=>{
         Cookies.set('token','jkjkj')
         render(
             <Provider store={storeUnauthenticated}>
@@ -34,7 +40,7 @@ describe('Navbar component',()=>{
                 </MemoryRouter>
             </Provider>
         )
-        const suggestions = screen.getByText(/Suggestions/i)
-        expect(suggestions).toBeDefined()
+        expect(screen.getByRole('link', { name: /suggestions/i })).toBeInTheDocument()
+        expect(screen.queryByRole('link', { name: /login/i })).not.toBeInTheDocument()
     })
 })

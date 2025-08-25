@@ -18,7 +18,7 @@ const UserDetailsComponent = ( {user} : GitHubSearchResponse) => {
 
   return (
     <div>
-      <img src={user.avatar_url} height={140}  alt="avatar" />
+      {user.avatar_url && <img src={user.avatar_url} height={140}  alt="avatar" />}
       {user.login && <div><span>Username: </span><a href={user.html_url}><span>{user.login}</span></a></div>}
       {user.bio && <div><span>Bio: </span><span>{user.bio}</span></div>}
       {user.location && <div><span>Location: </span><span>{user.location}</span></div>}

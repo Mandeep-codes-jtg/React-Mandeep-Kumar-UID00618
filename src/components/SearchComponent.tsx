@@ -22,7 +22,11 @@ const SearchComponent = ({ onSearch, suggest }: SearchComponentProps) => {
         type="text"
         placeholder="Search GitHub users"
         value={query}
-        onChange={(e) => {setQuery(e.target.value);suggest(e.target.value)}}
+        onChange={(e) => {
+          const v = e.target.value;
+          setQuery(v);
+          suggest(v)
+        }}
         
         style={{ padding: '0.5rem', width: '250px' }}
         onKeyDown={(e)=>{if(e.key==="Enter"){handleSearch()}}}

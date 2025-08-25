@@ -4,9 +4,11 @@ import type { AppDispatch } from '../store';
 import { loginUsingPAT } from '../services/LoginService';
 import Cookies from 'js-cookie';
 import './LoginComponent.css'
+import { useNavigate } from 'react-router-dom';
 
 const LoginComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ password?: string }>({});
   const [loading, setLoading] = useState(false)
@@ -26,10 +28,16 @@ const LoginComponent = () => {
       setLoading(true)
       const data = await loginUsingPAT(tokenInput)
       dispatch({type: 'LOGIN_SUCCESS', payload: data })
-      Cookies.set('token', tokenInput,{expires: 7})
+      Cookies.set('token', tokenInput, {
+        expires: 7,
+        sameSite: 'lax',
+        secure: window.location.protocol === 'https:'
+      })
+      navigate('/profile', { replace: true })
     } catch (error) {
       console.log(error)
-      dispatch({type: 'LOGIN_FAILURE', payload: error instanceof Error ? error.toString() : null})
+      const message: string = error instanceof Error ? error.message : 'Login failed'
+      dispatch({type: 'LOGIN_FAILURE', payload: message})
       Cookies.remove('token')
       alert('Incorrect token.')
     } finally {
@@ -49,7 +57,7 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className='container'>
+    <div className='loginContainer'>
       <form onSubmit={formSubmissionHandler}>
         <h1>Login</h1>
 

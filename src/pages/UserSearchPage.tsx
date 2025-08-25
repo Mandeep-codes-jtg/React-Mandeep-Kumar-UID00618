@@ -12,6 +12,7 @@ import { unfollow } from '../services/UnfollowService';
 import Cookies from 'js-cookie';
 import Loader from '../components/Loader';
 import { suggest } from '../services/UserSuggestionsService';
+import { DEC_FOLLOWERS, DEC_FOLLOWING, INC_FOLLOWERS, INC_FOLLOWING } from '../actions/actions';
 
 
 const UserSearchPage = () => {
@@ -79,14 +80,14 @@ const UserSearchPage = () => {
       if(!following){
         await follow(user.login, token)
         setFollowing(true)
-        dispatch({type: 'INC_FOLLOWING'})
-        dispatch({type: 'INC_FOLLOWERS'})
+        dispatch({type: INC_FOLLOWING})
+        dispatch({type: INC_FOLLOWERS})
       }
       else {
         await unfollow(user.login, token)
         setFollowing(false)
-        dispatch({type: 'DEC_FOLLOWING'})
-        dispatch({type: 'DEC_FOLLOWERS'})
+        dispatch({type: DEC_FOLLOWING})
+        dispatch({type: DEC_FOLLOWERS})
       }
     }
     catch(error){
@@ -115,19 +116,33 @@ const UserSearchPage = () => {
       }
     }
     checkIfFollowing()
-  },[user?.login, authUser?.login])
+  },[user, token])
 
   return (
     <div style={{ padding: '2rem' }}>
       <h2>GitHub User Search</h2>
       <SearchComponent onSearch={handleSearch} suggest={dsuggestions}/>
-      {suggestions && suggestions.map((suggestion,index)=>{
+      {suggestions && suggestions.length > 0 && (
+        <div className="suggestions-container">
+          {suggestions.map((suggestion, index) => {
         return (
-          <div key={index} onClick={()=>{handleSearch(suggestion.login as string)}}>
-            {suggestion.login}
-          </div>
+              <div 
+                key={suggestion.id || index}
+                className="suggestion-item"
+                onClick={() => handleSearch(suggestion.login as string)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleSearch(suggestion.login as string);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                style={{ cursor: 'pointer', padding: '8px', borderBottom: '1px solid #eee' }}
+              >
+                {suggestion.login}
+              </div>
         )
-      })}
+      })}</div>)}
       {isSearched && (user ? 
           (loading? (<Loader/>) : (<div>
             <UserDetailsComponent user={user} />

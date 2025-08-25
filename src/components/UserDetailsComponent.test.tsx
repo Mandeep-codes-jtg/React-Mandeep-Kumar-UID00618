@@ -31,10 +31,10 @@ describe('UserDetails component', () => {
                 <UserDetailsComponent user={user}/>
             </Provider>
         )
-        expect(screen.getByText('bio')).toBeDefined()
-        expect(screen.getByText('245')).toBeDefined()
-        expect(screen.getByText('19')).toBeDefined()
-        expect(screen.getByText('usa')).toBeDefined()
-        expect(screen.getByText('hello')).toBeDefined()
+        expect(screen.getByText('bio')).toBeInTheDocument()
+        expect(screen.getByText('245')).toBeInTheDocument()
+        expect(screen.getByText('19')).toBeInTheDocument()
+        expect(screen.getByText('usa')).toBeInTheDocument()
+        expect(screen.getByText('hello')).toBeInTheDocument()
     })
 })

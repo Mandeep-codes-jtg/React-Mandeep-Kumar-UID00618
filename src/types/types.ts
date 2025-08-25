@@ -10,7 +10,3 @@ export interface AuthState extends GitHubUser {
 export interface FollowerState {
   followers: number;
 }
-
-export interface ButtonType extends EventTarget {
-  textContent: string;
-}

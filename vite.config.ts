@@ -6,6 +6,6 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 export default defineConfig({
   plugins: [
     react(),
-    EnvironmentPlugin('all')
+    EnvironmentPlugin(['VITE_GITHUB_TOKEN'])
   ],
 })

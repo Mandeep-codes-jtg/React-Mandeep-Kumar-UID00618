@@ -12,7 +12,7 @@ describe('page-not-found page',()=>{
                 </MemoryRouter>
             )
             const heading = screen.getByText(/404/i)
-            expect(heading).toBeDefined()
+            expect(heading).toBeInTheDocument()
         })
     })
 })

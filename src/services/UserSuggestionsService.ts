@@ -5,7 +5,7 @@ export const suggest = async (query: string) => {
         `https://api.github.com/search/users?q=${encodeURIComponent(query)} in:login&per_page=4`,
         {
             headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
+                Authorization: `Bearer ${process.env.VITE_GITHUB_TOKEN}`
             }
         }
     )

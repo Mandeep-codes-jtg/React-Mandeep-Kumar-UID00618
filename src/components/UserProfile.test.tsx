@@ -22,6 +22,6 @@ describe('UserProfile component',()=>{
                 </MemoryRouter>
             </Provider>
         )
-        expect(screen.getByText(/My Profile/i)).toBeDefined()
+        expect(screen.getByText(/My Profile/i)).toBeInTheDocument()
     })
 })

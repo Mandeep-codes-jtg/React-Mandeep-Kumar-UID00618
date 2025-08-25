@@ -10,11 +10,13 @@ import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 import { loginUsingPAT } from './services/LoginService'
 import { useDispatch } from 'react-redux'
-import { type AppDispatch } from './store'
+import type { AppDispatch, RootState } from './store'
+import { useSelector } from 'react-redux'
 
 function App() {
     const dispatch = useDispatch<AppDispatch>()
     const token = Cookies.get('token'); 
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)
     
     useEffect(() => {
       if (!token) return
@@ -36,10 +38,19 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Navigate to={token ? '/profile' : '/login'} replace />} />
-          <Route path='/login' element={<LoginPage />}/>
+          <Route
+            path="/"
+            element={<Navigate to={isAuthenticated ? '/profile' : '/login'} replace />}
+          />
+          <Route
+            path="/login"
+            element={
+              isAuthenticated
+                ? <Navigate to="/profile" replace />
+                : <LoginPage />
+            }
+          />
           <Route path='/user-search' element={<UserSearchPage />}/>
-          <Route path='/login' element={<LoginPage />}/>
           <Route path='/profile' element={<UserProfile />}/>
           <Route path='/suggestions' element={<SuggestionsPage />}/>
           <Route path='*' element={<PageNotFound />}/>

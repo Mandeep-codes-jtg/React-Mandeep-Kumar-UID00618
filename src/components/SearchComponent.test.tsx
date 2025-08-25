@@ -4,8 +4,8 @@ import SearchComponent from "./SearchComponent";
 describe('Search component', () => {
     test('input and button renders', ()=>{
         render(<SearchComponent onSearch={()=>{}} suggest={()=>{}}/>)
-        expect(screen.getByPlaceholderText(/Search GitHub User/i)).toBeDefined()
-        expect(screen.getByRole('button', {name: /Search/i})).toBeDefined()
+        expect(screen.getByPlaceholderText(/Search GitHub users/i)).toBeInTheDocument()
+        expect(screen.getByRole('button', {name: /Search/i})).toBeInTheDocument()
     })
 
     test('empty input search', ()=>{
