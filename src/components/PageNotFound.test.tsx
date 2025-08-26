@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import PageNotFound from './PageNotFound'
 import { MemoryRouter } from 'react-router-dom'
+import '@testing-library/jest-dom'
 
 
 describe('page-not-found page',()=>{
