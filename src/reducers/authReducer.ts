@@ -7,12 +7,12 @@ import {
   DEC_FOLLOWING,
 } from '../actions/actions';
 import { type AuthActionTypes } from '../actions/actions';
+import type { GitHubUser } from '../types/github';
 import { type AuthState } from '../types/types';
 
-const initialState: AuthState = {
+const initialState:AuthState = {
   isAuthenticated: false,
   user: null,
-  token: null,
   html_url: '',
   avatar_url: '',
   login: null,
@@ -27,7 +27,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-const authReducer= (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
+const authReducer = (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
   switch (action.type) {
     case LOGIN_REQUEST:
       return { ...state, loading: true, error: null };
@@ -35,18 +35,17 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload.login,
-        token: action.payload.token,
-        avatar_url: action.payload.avatar_url,
-        html_url: action.payload.html_url,
-        login: action.payload.login,
-        bio: action.payload.bio,  
-        blog: action.payload.blog,
-        email: action.payload.email,
-        followers: action.payload.followers,
-        following: action.payload.following,
-        id: action.payload.id,
-        location: action.payload.location,
+        user: (action.payload as GitHubUser).login,
+        avatar_url: (action.payload as GitHubUser).avatar_url,
+        html_url: (action.payload as GitHubUser).html_url,
+        login: (action.payload as GitHubUser).login,
+        bio: (action.payload as GitHubUser).bio,  
+        blog: (action.payload as GitHubUser).blog,
+        email: (action.payload as GitHubUser).email,
+        followers: (action.payload as GitHubUser).followers,
+        following: (action.payload as GitHubUser).following,
+        id: (action.payload as GitHubUser).id,
+        location: (action.payload as GitHubUser).location,
         loading: false,
         error: null,
       };
@@ -55,7 +54,6 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
         ...state,
         isAuthenticated: false,
         user: null,
-        token: null,
         avatar_url: '',
         html_url: '',
         login: null,
@@ -67,14 +65,13 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
         id: null,
         location: null,
         loading: false,
-        error: action.payload,
+        error: action.payload as string,
       };
     case LOGOUT:
       return {
         ...state,
         isAuthenticated: false,
         user: null,
-        token: null,
         avatar_url: '',
         html_url: '',
         login: null,
@@ -99,7 +96,7 @@ const authReducer= (state: AuthState = initialState, action: AuthActionTypes): A
         following: state.following - 1,
       }
     default:
-      return state;
+      return state
   }
 };
 

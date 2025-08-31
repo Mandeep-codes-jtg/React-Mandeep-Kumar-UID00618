@@ -1,3 +1,4 @@
+import type { UnknownAction } from "redux";
 import type { GitHubUser } from "../types/github";
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
@@ -11,9 +12,6 @@ export const INC_FOLLOWERS = 'INC_FOLLOWERS';
 export const DEC_FOLLOWERS = 'DEC_FOLLOWERS';
 export const INIT_FOLLOWERS = 'INIT_FOLLOWERS';
 
-interface LoginSuccessResponse extends GitHubUser {
-  token: string;
-}
 
 interface LoginRequestAction {
   type: typeof LOGIN_REQUEST;
@@ -21,7 +19,7 @@ interface LoginRequestAction {
 
 interface LoginSuccessAction {
   type: typeof LOGIN_SUCCESS;
-  payload: LoginSuccessResponse;
+  payload: GitHubUser;
 }
 
 interface LoginFailureAction {
@@ -47,7 +45,8 @@ export type AuthActionTypes =
   | LoginFailureAction
   | LogoutAction
   | IncFollowing
-  | DecFollowing;
+  | DecFollowing
+  | UnknownAction;
 
 interface IncFollowers {
   type: typeof INC_FOLLOWERS;
@@ -65,4 +64,5 @@ interface InitFollowers {
 export type FollowerActionTypes =
   | IncFollowers
   | DecFollowers
-  | InitFollowers;
+  | InitFollowers
+  | UnknownAction;

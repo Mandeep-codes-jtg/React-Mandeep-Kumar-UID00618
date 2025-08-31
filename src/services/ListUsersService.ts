@@ -8,8 +8,6 @@ export const getRandomSuggestions = async (token?: string): Promise<GitHubUser[]
     {
       params: { per_page: 5, since },
       headers: {
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       validateStatus: () => true,
